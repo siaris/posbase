@@ -10,7 +10,6 @@ import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { GoogleLogin } from '@react-oauth/google'
-import axios from 'axios'
 import { jwtDecode } from 'jwt-decode'
 import { useState } from 'react'
   
@@ -32,9 +31,6 @@ import { useState } from 'react'
       auth.login(data.email, data.password)
         navigate('/')
     }
-    const client = axios.create({
-        baseURL: import.meta.env.VITE_BE_HOST
-    })
     const [isDisabled, setisDisabled] = useState<boolean>(auth.isAwaiting || false);
   
     return (
@@ -92,18 +88,7 @@ import { useState } from 'react'
                     const decoded = jwtDecode<any>(credentialResponse.credential)
                     if (decoded.email_verified === true) {
                       //regist3r
-                      await client.post('/account/regist3r',{token: credentialResponse.credential}).then((response) => {
-                                  alert('Berhasil mendaftar');
-                                  console.log(response.data);
-                                  if(response.data.status === 'success') 
-                                    auth.login_google({
-                                      token:response.data.token,
-                                      email: decoded.email,
-                                  })
-                              }).catch ((error) => {
-                                  alert('Gagal mendaftar karena '+error);
-                              });
-
+                      await auth.login_google(credentialResponse.credential);
                     }
                     setisDisabled(false);
                     // console.log(decoded);
@@ -118,8 +103,8 @@ import { useState } from 'react'
 
                     // auth.login(decoded.email) // atau decoded.name, dst
 
-                    // navigate('/');
-                    alert('Login berhasil dengan google');
+                    navigate('/');
+                    // alert('Login berhasil dengan google');
                   }
                 }}
                 onError={() => {

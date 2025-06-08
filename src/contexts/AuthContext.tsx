@@ -7,7 +7,7 @@ type AuthContextType = {
   login: (email: string, password: string) => Promise<void>
   logout: () => void
   isAwaiting?: boolean
-  login_google: (args: {token: string;email: string;}) => void
+  login_google: (token: string) => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | null>(null)
@@ -42,10 +42,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Simpan token jika perlu: localStorage.setItem('token', data.token);
   }
 
-  const login_google = ({ token, email }: { token: string; email: string }) => {
-    helper.setCookieWithExpiration(window.location.hostname+':token',token,3600);
-    helper.setCookieWithExpiration(window.location.hostname+':email',email,3600);
+  const login_google = async (token: string ) => {
+    await client.post('/account/regist3r',{token: token}).then((response) => {
+      alert('Berhasil mendaftar');
+      console.log(response.data);
+      if(response.data.status === 'success') 
+        setLoginCookie(
+          response.data.token
+        )
+    })
+    .catch ((error) => {
+        alert('Gagal mendaftar karena '+error);
+    });
     // You can also store the token if needed, e.g. localStorage.setItem('token', token)
+  }
+
+  const setLoginCookie = (token: string) => {
+    helper.setCookieWithExpiration(window.location.hostname+':token',token,3600);
   }
 
   const logout = () => {
