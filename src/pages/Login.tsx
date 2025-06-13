@@ -26,10 +26,16 @@ import { useState } from 'react'
     } = useForm<LoginFormInputs>()
     const auth = useAuth()
     const navigate = useNavigate()
-    const onSubmit = (data: LoginFormInputs) => {
+    const onSubmit = async (data: LoginFormInputs) => {
       setisDisabled(true);  
-      auth.login(data.email, data.password)
-        navigate('/')
+      let successLogin = await auth.login(data.email, data.password)
+      if(successLogin === true){
+        navigate('/');
+        return;
+      }
+      setisDisabled(false);
+      alert('login failed, wrong username or password');
+      return;
     }
     const [isDisabled, setisDisabled] = useState<boolean>(auth.isAwaiting || false);
   
@@ -83,35 +89,20 @@ import { useState } from 'react'
             >
               <GoogleLogin
                 onSuccess={async (credentialResponse) => {
+                  let successLogin = false;
                   setisDisabled(true);
                   if (credentialResponse.credential) {
                     const decoded = jwtDecode<any>(credentialResponse.credential)
                     if (decoded.email_verified === true) {
-                      //regist3r
-                      await auth.login_google(credentialResponse.credential);
+                      successLogin = await auth.login_google(credentialResponse.credential);
                     }
                     setisDisabled(false);
-                    // console.log(decoded);
-                    // const existing = localStorage.getItem('user')
-                    
-                    // if (!existing) {
-                    //   console.log(decoded,'Register akun baru dari Google:', decoded.email)
-                    //   // Di sini kamu bisa kirim data ke backend juga
-                    // }
-
-
-
-                    // auth.login(decoded.email) // atau decoded.name, dst
-
-                    navigate('/');
-                    // alert('Login berhasil dengan google');
+                    if(successLogin === true) navigate('/');
                   }
                 }}
                 onError={() => {
-                  console.log('Login gagal');
+                  setisDisabled(false);
                   alert('Login gagal');
-                  const button = document.querySelector('button[type="submit"]') as HTMLButtonElement
-                  if (button) button.disabled = false
                 }}
               />
             </Box>

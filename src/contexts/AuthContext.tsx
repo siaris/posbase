@@ -4,10 +4,10 @@ import axios from 'axios'
 
 type AuthContextType = {
   user: string | null
-  login: (email: string, password: string) => Promise<void>
+  login: (email: string, password: string) => Promise<boolean>
   logout: () => void
   isAwaiting?: boolean
-  login_google: (token: string) => Promise<void>
+  login_google: (token: string) => Promise<boolean>
 }
 
 const AuthContext = createContext<AuthContextType | null>(null)
@@ -26,35 +26,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const login = async (email: string, password: string) => {
+    let rtr = false;
     // Ganti URL di bawah dengan endpoint backend autentikasi Anda
     setisAwaiting(true); // Set isAwaiting to true while waiting for the response
-    const response = await client.post('/account/login', { "email":email, "password":password });
+    await client.post('/account/login', { "email":email, "password":password }).then((response) => {
+      if(response.data.status === 'success'){
+        setLoginCookie(response.data.token)
+        rtr = true;
+      }
+    })
+    .catch ((error) => {
+        console.log('Gagal login karena '+error);
+    });
     setisAwaiting(false);
-
-    if (!response || response.status !== 200) {
-      throw new Error('Login gagal');
-    }
-
-    // Misal backend mengembalikan data user
-    // const data = await response;
-    // setUser(data);
-    // localStorage.setItem('user', '');
-    // Simpan token jika perlu: localStorage.setItem('token', data.token);
+    return rtr;
+    
   }
 
   const login_google = async (token: string ) => {
+    let rtr = false;
     await client.post('/account/regist3r',{token: token}).then((response) => {
       alert('Berhasil mendaftar');
-      console.log(response.data);
-      if(response.data.status === 'success') 
-        setLoginCookie(
-          response.data.token
-        )
+      if(response.data.status === 'success'){
+        setLoginCookie(response.data.token)
+        rtr = true;
+      }
     })
     .catch ((error) => {
         alert('Gagal mendaftar karena '+error);
     });
-    // You can also store the token if needed, e.g. localStorage.setItem('token', token)
+    return rtr;
   }
 
   const setLoginCookie = (token: string) => {
