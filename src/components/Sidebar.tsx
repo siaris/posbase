@@ -9,8 +9,9 @@ const drawerWidth = 200
 
 const menuItems = [
   { label: 'Dashboard', path: '/' },
+  { label: 'Master Barang', path: '/master-barang' }, // Added new link
   { label: 'Logout', path: '/logout' }
-]
+];
 
 export default function Sidebar(): React.JSX.Element {
   const navigate = useNavigate()
