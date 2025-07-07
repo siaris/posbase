@@ -5,6 +5,7 @@ import Logout from './pages/Logout'
 import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import MasterBarang from './pages/MasterBarang'; // Added import
+import SatuanPage from './pages/SatuanPage'; // Import the new SatuanPage
 import Error404 from './pages/Error404'
 import ProtectedRoute from './components/ProtectedRoute'
 import { AuthProvider } from './contexts/AuthContext'
@@ -26,6 +27,7 @@ export default function App(): React.JSX.Element {
         >
           <Route path="/" element={<Dashboard />} />
           <Route path="/master-barang" element={<MasterBarang />} /> {/* Added route */}
+          <Route path="/master/satuan" element={<SatuanPage />} /> {/* Added route for SatuanPage */}
         </Route>
         <Route path="*" element={<Error404 />} />
       </Routes>
