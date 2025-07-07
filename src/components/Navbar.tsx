@@ -12,9 +12,6 @@ export default function Navbar() {
       <Toolbar>
         <Typography variant="h6">POS App</Typography>
       </Toolbar>
-      <Button color="inherit" onClick={logout}>
-        Logout
-        </Button>
     </AppBar>
   )
 }
