@@ -1,4 +1,4 @@
-export const getCookieValue = (cookieName: any): any => {
+export const getCookieValue = (cookieName: string): any => {
     var cookies = document.cookie;
     var cookieArray = cookies.split(";");
     for (var i = 0; i < cookieArray.length; i++) {
@@ -10,7 +10,7 @@ export const getCookieValue = (cookieName: any): any => {
     return null;
 }
 
-export const setCookieWithExpiration = (cookieName: any, cookieValue: any, secondsToExpire: any): any => {
+export const setCookieWithExpiration = (cookieName: string, cookieValue: any, secondsToExpire: number): any => {
     var date = new Date();
     date.setTime(date.getTime() + (secondsToExpire * 1000));
     var expires = "expires=" + date.toUTCString();
@@ -18,7 +18,7 @@ export const setCookieWithExpiration = (cookieName: any, cookieValue: any, secon
     document.cookie = cookieName + "Ed=" + (Math.floor((date as any)/1000)) + ";" + expires + ";path=/";
 }
 
-export const deleteCookie = (cookieName: any): any => {
+export const deleteCookie = (cookieName: string): any => {
     document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
 }
 
