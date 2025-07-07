@@ -89,7 +89,7 @@ import { useState } from 'react'
             >
               <GoogleLogin
                 onSuccess={async (credentialResponse) => {
-                  let successLogin = false;
+                  let successLogin: boolean = false;
                   setisDisabled(true);
                   if (credentialResponse.credential) {
                     const decoded = jwtDecode<any>(credentialResponse.credential)
@@ -97,7 +97,9 @@ import { useState } from 'react'
                       successLogin = await auth.login_google(credentialResponse.credential);
                     }
                     setisDisabled(false);
-                    if(successLogin === true) navigate('/');
+                    if(successLogin === true){
+                      window.location.replace("/")
+                    }
                   }
                 }}
                 onError={() => {

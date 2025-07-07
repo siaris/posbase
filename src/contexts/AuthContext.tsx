@@ -13,7 +13,7 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType | null>(null)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<string | null>(null)
+  const [user, setUser] = useState<string | null>(helper.getCookieValue(`${window.location.hostname}:token`))
   let [isAwaiting, setisAwaiting] = useState<boolean>(false)
   isAwaiting = isAwaiting || false; // Ensure isAwaiting is always a boolean
   const client = axios.create({
@@ -21,7 +21,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     })
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user')
+    const storedUser = helper.getCookieValue(`${window.location.hostname}:token`)
     if (storedUser) setUser(storedUser)
   }, [])
 
@@ -45,15 +45,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login_google = async (token: string ) => {
     let rtr = false;
-    await client.post('/account/regist3r',{token: token}).then((response) => {
-      alert('Berhasil mendaftar');
-      if(response.data.status === 'success'){
-        setLoginCookie(response.data.token)
+    await client.post('/register',{google_token: token}).then((response) => {
+      if(response.data.success === true){
+        setLoginCookie(response.data.data.token)
         rtr = true;
       }
+      alert('Berhasil mendaftar');
     })
     .catch ((error) => {
-        alert('Gagal mendaftar karena '+error);
+        alert('Gagal mendaftar');
     });
     return rtr;
   }
