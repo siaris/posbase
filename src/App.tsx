@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom'
 import MainLayout from './layouts/MainLayout'
 import Login from './pages/Login'
+import Logout from './pages/Logout'
 import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import MasterBarang from './pages/MasterBarang'; // Added import
@@ -14,6 +15,7 @@ export default function App(): React.JSX.Element {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/logout" element={<Logout />} />
         {/* Protected Routes */}
         <Route
           element={
